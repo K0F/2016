@@ -38,6 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Map map;
 
+boolean RENDER = true;
 
 ////////////////////////////////////////////////////////
 float MAGIC_NUMBER = 0.05293339301;
@@ -100,6 +101,12 @@ void draw(){
   float theta = frameCount/SHAPE_MOVEMENT_SPEED;
   ellipse(width/2+(cos(theta)*(height/PI-RADIUS/2.0)),height/2+(sin(theta)*(height/PI-RADIUS/2.0)),RADIUS,RADIUS);
 
+
+  if(RENDER){
+    saveFrame("/tmp/fr#####.tga");
+    if(frameCount>=36000)
+    exit();
+  }
 
 }
 ////////////////////////////////////////////////////////
