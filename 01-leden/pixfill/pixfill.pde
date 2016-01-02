@@ -36,25 +36,35 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-
-
 Map map;
 
-/////////////////////////////////////////
-int UNIVERSE_SETUP;
+
+////////////////////////////////////////////////////////
 float MAGIC_NUMBER = 0.05293339301;
 int FLICKER_CADENCE = 7;
 float SHAPE_FILL_AMMOUNT = 80;
 float SHAPE_MOVEMENT_SPEED = 3.333;
 float RADIUS = 100.0;
-int patternX[] = {1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16};
-int patternY[] = {1,2,3,4,5,6,7,8,9,10,160,32,31,15};
-/////////////////////////////////////////
-
+int UNIVERSE_SETUP;
+float POWPOW;
 boolean white = true;
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+int patternX[] = {1,16,32,30,64,120,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+int patternY[] = {1,2,3,4,5,6,7,8,9,10,160,32,31,15};
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+
+
+/////////////
+//   !!!   //
+/////////////
+
+float META_POW = 10.333;
+////////////////////////////////////////////////////////
 
 void setup(){
-  size(320,320,P2D);
+  size(1280,720,P2D);
 
   //radical variant
   //UNIVERSE_SETUP=year()+month()+day()+hour()+minute()+second();
@@ -66,34 +76,33 @@ void setup(){
   map = new Map(width,height);
 }
 
+
+void MAGIC(){
+  POWPOW = noise(frameCount/100000.1)*META_POW;
+  MAGIC_NUMBER = pow(noise(frameCount/10.0)*0.9293339301+0.001,noise(frameCount/10.001)*POWPOW);      
+  FLICKER_CADENCE = (int)(noise(frameCount/333.1)*23.0+1.0);
+  SHAPE_FILL_AMMOUNT = noise(frameCount/100.2)*180.0;
+  SHAPE_MOVEMENT_SPEED = noise(frameCount/1000.201)*30.333+1.0;
+}
+
+
+////////////////////////////////////////////////////////
 void draw(){
 
   MAGIC();
 
   map.draw();
-  try{
-    if(frameCount%FLICKER_CADENCE==0)
-      white=!white;
+  if(frameCount%FLICKER_CADENCE==0)
+    white=!white;
 
-    fill(white?255:0,SHAPE_FILL_AMMOUNT);
-    noStroke();
-    float theta = frameCount/SHAPE_MOVEMENT_SPEED;
-    ellipse(width/2+(cos(theta)*(height/PI-RADIUS/2.0)),height/2+(sin(theta)*(height/PI-RADIUS/2.0)),RADIUS,RADIUS);
-  }catch(Exception e){
-    println("That weird division by zero");
-  }
+  fill(white?255:0,SHAPE_FILL_AMMOUNT);
+  noStroke();
+  float theta = frameCount/SHAPE_MOVEMENT_SPEED;
+  ellipse(width/2+(cos(theta)*(height/PI-RADIUS/2.0)),height/2+(sin(theta)*(height/PI-RADIUS/2.0)),RADIUS,RADIUS);
 
 
 }
-
-void MAGIC(){
-  float POWPOW = noise(frameCount/100000.1)*10.0;
-  MAGIC_NUMBER = pow(noise(frameCount/10.0)*0.9293339301+0.001,noise(frameCount/10.001)*POWPOW);      
-  FLICKER_CADENCE = (int)(noise(frameCount/333.1)*23.0);
-  SHAPE_FILL_AMMOUNT = noise(frameCount/100.2)*180.0;
-  SHAPE_MOVEMENT_SPEED = noise(frameCount/1000.201)*30.333+1.0;
-
-}
+////////////////////////////////////////////////////////
 
 class Map{
   boolean [][] pix;
@@ -139,10 +148,7 @@ class Map{
   }
 
   void draw(){
-
-
     loadPixels();
-
 
     color c1 = color(255);
     color c2 = color(0);
@@ -170,7 +176,6 @@ class Map{
       counterY=0;
       modY*=-1;
     }
-
   }
-
 }
+////////////////////////////////////////////////////////
