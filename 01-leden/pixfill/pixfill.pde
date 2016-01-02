@@ -1,39 +1,99 @@
+/*
+Magic pix fill by Kof
+Copyright (C) 2016 Krystof Pesek
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+
+   ,dPYb,                  ,dPYb,
+   IP'`Yb                  IP'`Yb
+   I8  8I                  I8  8I
+   I8  8bgg,               I8  8'
+   I8 dP" "8    ,ggggg,    I8 dP
+   I8d8bggP"   dP"  "Y8ggg I8dP
+   I8P' "Yb,  i8'    ,8I   I8P
+  ,d8    `Yb,,d8,   ,d8'  ,d8b,_
+  88P      Y8P"Y8888P"    PI8"8888
+                           I8 `8,
+                           I8  `8,
+                           I8   8I
+                           I8   8I
+                           I8, ,8'
+                            "Y8P'
+
+*/
+
+
 
 Map map;
 
-
 /////////////////////////////////////////
-float MAGIC_NUMBER = 0.1293339301;      //
+int UNIVERSE_SETUP;
+float MAGIC_NUMBER = 0.05293339301;
 int FLICKER_CADENCE = 7;
 float SHAPE_FILL_AMMOUNT = 80;
 float SHAPE_MOVEMENT_SPEED = 3.333;
 float RADIUS = 100.0;
 int patternX[] = {1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16};
-int patternY[] = {1,2,3,4,5,6,7,8,9,10};
+int patternY[] = {1,2,3,4,5,6,7,8,9,10,160,32,31,15};
 /////////////////////////////////////////
 
 boolean white = true;
 
 void setup(){
-  size(640/2,480/2,P2D);
+  size(320,320,P2D);
+
+  //radical variant
+  //UNIVERSE_SETUP=year()+month()+day()+hour()+minute()+second();
+
+  //conservative variant
+  UNIVERSE_SETUP=year();
+
+  noiseSeed(UNIVERSE_SETUP);
   map = new Map(width,height);
 }
 
 void draw(){
+
+  MAGIC();
+
   map.draw();
+  try{
+    if(frameCount%FLICKER_CADENCE==0)
+      white=!white;
 
+    fill(white?255:0,SHAPE_FILL_AMMOUNT);
+    noStroke();
+    float theta = frameCount/SHAPE_MOVEMENT_SPEED;
+    ellipse(width/2+(cos(theta)*(height/PI-RADIUS/2.0)),height/2+(sin(theta)*(height/PI-RADIUS/2.0)),RADIUS,RADIUS);
+  }catch(Exception e){
+    println("That weird division by zero");
+  }
 
-  if(frameCount%FLICKER_CADENCE==0)
-  white=!white;
-
-
-  fill(white?255:0,SHAPE_FILL_AMMOUNT);
-  noStroke();
-  float theta = frameCount/SHAPE_MOVEMENT_SPEED;
-  ellipse(width/2+(cos(theta)*(height/PI-RADIUS/2.0)),height/2+(sin(theta)*(height/PI-RADIUS/2.0)),RADIUS,RADIUS);
 
 }
 
+void MAGIC(){
+  float POWPOW = noise(frameCount/100000.1)*10.0;
+  MAGIC_NUMBER = pow(noise(frameCount/10.0)*0.9293339301+0.001,noise(frameCount/10.001)*POWPOW);      
+  FLICKER_CADENCE = (int)(noise(frameCount/333.1)*23.0);
+  SHAPE_FILL_AMMOUNT = noise(frameCount/100.2)*180.0;
+  SHAPE_MOVEMENT_SPEED = noise(frameCount/1000.201)*30.333+1.0;
+
+}
 
 class Map{
   boolean [][] pix;
@@ -89,7 +149,7 @@ class Map{
     for(int y = 0 ; y < h; y++){
       for(int x = 0 ; x < w; x++){
         color c = pixels[y*w+x];
-        if(pix[((x+w)-(patternX[counterX]*modX))%w][y] ^ pix[x][((y+h)-(patternX[counterX]*modY))%h])
+        if(pix[((x+w)-(patternX[counterX]*modX))%w][y] ^ pix[x][((y+h)-(patternY[counterY]*modY))%h])
           set(x,y,lerpColor(c,c1,MAGIC_NUMBER));
         else
           set(x,y,lerpColor(c,c2,MAGIC_NUMBER));
