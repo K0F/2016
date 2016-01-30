@@ -15,6 +15,7 @@ void draw(){
   background(255);
 
   parser.hid();
+  parser.draw();
 }
 
 class Parser{
@@ -24,12 +25,14 @@ class Parser{
   int w=1600,h=900;
   String machine,version,display;
   String date,time;
+  int minTime=999999999,maxTime=-1;
 
   int dataOffset,dataLength;
 
   Parser(String _filename){
     filename = _filename;
     raw = loadStrings(filename);
+    println("\n#################################################\n# xnee 3.19 parser, opening file "+filename+"\n#################################################\n");
     parse();
   }
 
@@ -41,6 +44,20 @@ class Parser{
       text(messag[i]+" "+info[i],10,i*9+10);
   }
 
+  void draw(){
+
+    noFill();
+    stroke(0);
+    beginShape();
+    for(int i = 0 ; i < actions.size();i++){
+      Action tmp = (Action)actions.get(i);
+      if(tmp.type==0)
+        vertex(tmp.pos.x,tmp.pos.y);
+    }
+    endShape();
+
+  }
+
   void parse(){
 
     date = getInfo(3);
@@ -49,8 +66,9 @@ class Parser{
     machine = getInfo(18);
     display = getInfo(21);
 
-    w = parseInt(splitTokens(getInfo(22),"x")[0]);
-    h = parseInt(splitTokens(getInfo(22),"x")[1]);
+    // WTF?
+    // w = parseInt(splitTokens(getInfo(22),"x")[0]);
+    // h = parseInt(splitTokens(getInfo(22),"x")[1]);
 
     dataOffset = getDataOffset();
     println("dataOffset: "+dataOffset);
@@ -58,7 +76,9 @@ class Parser{
     parseData();
 
     println("dataLength: "+dataLength);
-
+    println("minTime: "+minTime);
+    println("maxTime: "+maxTime);
+    println("duratin: "+(maxTime-minTime));
   }
 
   void parseData(){
@@ -71,9 +91,20 @@ class Parser{
         int posx = parseInt(splitTokens(raw[i],",")[2]);
         int posy = parseInt(splitTokens(raw[i],",")[3]);
         PVector tmp = new PVector(posx,posy);
-        actions.add(new Action(time,tmp));
+        actions.add(new Action(time,tmp,this));
 
       }
+
+      //detect keydown
+      if(raw[i].charAt(0)=='7' && raw[i].charAt(2)=='3'){
+        int time = parseInt(splitTokens(raw[i],",")[7]);
+        char ch = (char)(splitTokens(raw[i],",")[5]);
+        actions.add(new Action(time,ch,this));
+
+      }
+
+
+
     }
 
     dataLength = actions.size();
@@ -87,7 +118,6 @@ class Parser{
     String tmp[] = splitTokens(raw[ln],":");
 
     String prep = "";
-    println(ln+" "+ raw[ln] +" "+n);
     for(int i = 1 ; i < n;i++){
       if(i<n-1)
         prep+=tmp[i]+":";
@@ -128,22 +158,29 @@ search:
 // type 0=mouse,1=key
 
 class Action{
+  Parser parent;
   int time;
   int type;
   PVector pos;
   char key;
 
-  Action(int _time,PVector _pos){
+  Action(int _time,PVector _pos,Parser _parent){
+    parent = _parent;
     time = _time;
-    pos = new PVector(_pos.x,_pos.y);
+    pos = new PVector(map(_pos.x,0,parent.w,0,width),map(_pos.y,0,parent.h,0,height));
     type = 0;
+
+    parent.minTime = min(parent.minTime,time);
+    parent.maxTime = max(parent.maxTime,time);
   }
 
-  Action(int _time,char _key){
+  Action(int _time,char _key,Parser _parent){
+    parent = _parent;
     time = _time;
     key = _key;
     type = 1;
+
+    parent.minTime = min(parent.minTime,time);
+    parent.maxTime = max(parent.maxTime,time);
   }
-
-
 }
