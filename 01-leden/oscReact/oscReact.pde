@@ -8,11 +8,17 @@ AudioInput in;
 
 OscP5 oscP5;
 boolean ack;
+int value = 0;
+color c [] = new color[100];
 
 void setup() {
   size(1280,720,OPENGL);
 
   minim = new Minim(this);
+
+  for(int i = 0 ; i < c.length;i++){
+    c[i] = color(random(255),random(255),random(255));
+  }
 
   // use the getLineIn method of the Minim object to get an AudioInput
   in = minim.getLineIn(Minim.STEREO,735*2);
@@ -26,27 +32,27 @@ void setup() {
 }
 
 void draw() {
- // background(ack?255:0);  
-
-  if(frameCount%60==0){
-  frameRate(frameRate);
-  println(frameRate);
-  }
-
+  // background(ack?255:0);  
+  /*
+     if(frameCount%60==0){
+     frameRate(frameRate);
+     println(frameRate);
+     }
+   */
   scope();
 }
 
 
 void scope(){
 
- if(frameCount<10)
-  frame.setLocation(10,10);
+  if(frameCount<10)
+    frame.setLocation(10,10);
 
-  fill(ack?0:255,180);
+  fill(c[value],200);
   noStroke();
   rect(0,0,width,height);
   strokeWeight(2);  
-  stroke(ack?255:0,150);
+  stroke(0,150);
 
   pushMatrix();
   translate(width/2,height/2);
@@ -90,9 +96,15 @@ void keyPressed()
 void oscEvent(OscMessage theOscMessage) {
   /* print the address pattern and the typetag of the received OscMessage */
   ack = !ack;
-  print("### received an osc message.");
-  print(" addrpattern: "+theOscMessage.addrPattern());
-  println(" typetag: "+theOscMessage.typetag());
-  
+  if(theOscMessage.checkAddrPattern("/trig")) {
+    //if(theOscMessage.checkTypetag("ff")) {
+      value = (int)theOscMessage.get(1).floatValue();
+      println(value);
+    //}
+  }
+
+     print("### received an osc message.");
+     print(" addrpattern: "+theOscMessage.addrPattern());
+     println(" typetag: "+theOscMessage.typetag());
 }
 
