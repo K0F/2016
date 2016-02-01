@@ -1,4 +1,4 @@
-
+import processing.pdf.*;
 
 Parser parser;
 
@@ -11,11 +11,25 @@ void setup(){
 
 }
 
+boolean rec = false;
+
+void mousePressed(){
+  rec = true;
+}
+
 void draw(){
   background(255);
+  
+  if(rec)
+  beginRecord(PDF, "out.pdf");
 
   parser.hid();
   parser.draw();
+
+  if(rec){
+  endRecord();
+    rec = false;
+  }
 }
 
 class Parser{
@@ -175,7 +189,6 @@ class Parser{
       if(raw[i].charAt(0)=='7' && raw[i].charAt(2)=='3'){
         int time = parseInt(splitTokens(raw[i],",")[7]);
         int cc = parseInt(splitTokens(raw[i],",")[5]);
-        println(cc);
         String ch = charMap(cc);
 
         actions.add(new Action(time,ch,lastClick,this));
@@ -497,7 +510,17 @@ String charMap(int key){
     case 116:
       result= "<DOWN-ARROW>";
       break;
+
+      case 36:
+      result="\n";
+      break;
+      
+      case 23:
+      result="<TAB>";
+      break;
   }
+  
+  println("key: "+key+" mapped to "+result);
 
   return result;
 }
