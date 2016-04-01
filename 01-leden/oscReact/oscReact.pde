@@ -22,7 +22,7 @@ void setup() {
 
   // use the getLineIn method of the Minim object to get an AudioInput
   in = minim.getLineIn(Minim.STEREO,735*2);
-  in.mute();  
+  //in.mute();  
   /* start oscP5, listening for incoming messages at port 12000 */
   oscP5 = new OscP5(this,12000);
 
@@ -77,7 +77,7 @@ void scope(){
   popMatrix();
 
 }
-
+/*
 void keyPressed()
 {
   if ( key == 'm' || key == 'M' )
@@ -92,6 +92,8 @@ void keyPressed()
     }
   }
 }
+*/
+
 /* incoming osc message are forwarded to the oscEvent method. */
 void oscEvent(OscMessage theOscMessage) {
   /* print the address pattern and the typetag of the received OscMessage */

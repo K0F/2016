@@ -28,7 +28,7 @@ import java.io.*;
 String FILENAME = "text.txt";
 String SPLIT_TOKENS = " []<>()\"";
 boolean DEBUG = false;
-
+boolean done = true;
 float VOICE_WPM = 140.0; 
 
 String text[];
@@ -56,7 +56,7 @@ void setup(){
   textFont(loadFont("SempliceRegular-8.vlw"));
 
   while(nodes.size()<100){
-    delay(10);
+    delay(100);
   }
 
   walker = (Node)nodes.get((int)random(nodes.size()));
@@ -81,18 +81,22 @@ void draw(){
       tmp+=(String)output.get(i)+" ";
     }
 
-  //  verlaine.mluv(tmp);
+    //  verlaine.mluv(tmp);
+
+    if(done)
+    execute("echo '"+tmp+"' | festival --tts");
 
     for(int i = first ; i >= 0;i--){
       output.remove(i);
     }
   } 
-  
-  background(0);
+
 
   walker = walker.pickNext();
   result += walker.word+" ";
   output.add(walker.word);
+
+  background(0);
 
   int x = 10, y = height/2-20;
   int c = 0;
@@ -118,12 +122,7 @@ void draw(){
     }
     c++;
 
-
   }
-
-
-
-
 }
 
 class Node{
@@ -155,8 +154,6 @@ class Node{
       while(tmp==null||tmp==this){
         tmp = (Node)next.get((int)random(next.size()));
       }
-
-
       return tmp;
     }
   }
@@ -275,16 +272,15 @@ void getWords(){
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
 
 void execute(String _in){
+  done = false;
   Runnable runnable = new Executer(_in);
   Thread thread = new Thread(runnable);
   thread.start();
 }
 
-
-
+////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
 class Executer implements Runnable{
@@ -325,6 +321,8 @@ class Executer implements Runnable{
         System.out.println(s);
       }
 
+      done = true;
+
     }
     catch (IOException e) {
       System.out.println("exception happened - here's what I know: ");
@@ -333,4 +331,4 @@ class Executer implements Runnable{
   }
 }
 
- 
+
