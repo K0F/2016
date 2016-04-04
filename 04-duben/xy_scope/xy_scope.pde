@@ -4,10 +4,10 @@ Minim minim;
 AudioInput in;
 
 ArrayList mem;
-int SIZ = 1024;
+int SIZ = 442;
 float AMP = 125.0;
 float TAIL = 2;
-float SLOPE = 0.9;
+float SLOPE = 1.0;
 
 void setup()
 {
@@ -36,7 +36,7 @@ void draw()
 
   pushMatrix();
   translate(width/2,height/2);
-  rotate(radians(90)); 
+  rotate(radians(45)); 
   // draw the waveforms so we can see what we are monitoring
   for(int i = 1; i < in.bufferSize(); i++)
   {
