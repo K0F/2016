@@ -5,8 +5,8 @@ AudioInput in;
 
 ArrayList mem;
 int SIZ = (int)(44100/50.0);
-float AMP = 200.0;
-float TAIL = 2;
+float AMP = 100.0;
+float TAIL = 4;
 float SLOPE = 1.0;
 float MAXALPHA = 50;
 
@@ -41,7 +41,7 @@ if(frameCount<10)
 
   pushMatrix();
   translate(width/2,height/2);
-  //rotate(radians(45)); 
+  rotate(radians(45)); 
   // draw the waveforms so we can see what we are monitoring
   for(int i = 1; i < in.bufferSize()-1; i++)
   {
@@ -55,10 +55,10 @@ if(frameCount<10)
     float theta2 = (ampr1)*AMP*PI;
     float theta3 = (ampl2)*AMP*PI;
     float theta4 = (ampr2)*AMP*PI;
-    float l1 = cos(pos1)*theta1;
-    float r1 = sin(pos1)*theta2;
-    float l2 = cos(pos2)*theta3;
-    float r2 = sin(pos2)*theta4;
+    float l1 = theta1;
+    float r1 = theta2;
+    float l2 = theta3;
+    float r2 = theta4;
     
     strokeWeight(map(theta1+theta3,-AMP*PI,AMP*PI,1,3));
     
