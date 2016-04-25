@@ -30,8 +30,8 @@ class Editor {
   PVector pos;
 
   Editor() {
-    fontSize = 14;
-    font = createFont("Monospaced", fontSize, false);
+    fontSize = 11;
+    font = loadFont("DroidSansMono-11.vlw");
 
     textFont(font, fontSize);
     textAlign(LEFT);
