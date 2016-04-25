@@ -36,8 +36,7 @@ class Editor {
     textFont(font, fontSize);
     textAlign(LEFT);
 
-
-    pos = new PVector(100, 100);
+    pos = new PVector(100, 100+fontSize);
     carret = 0;
     ln=0;
     String test = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()_+-=1234567890:";
@@ -46,6 +45,7 @@ class Editor {
     code = new ArrayList();
     code.add("");
     add("hello world");
+    carret--;
   }
 
   void draw() {
@@ -61,7 +61,7 @@ class Editor {
     carret = constrain(carret,0,carret);
 
     noStroke();
-    fill((sin(frameCount/3.0)+1.0)*255);
+    fill(255,(sin(frameCount/3.0)+1.0)*255);
     rect(carret*glyphW+1, ln*fontSize+1, glyphW, -fontSize);
     popMatrix();
   }
@@ -69,8 +69,8 @@ class Editor {
   void add(String _input) {
     String line = (String)code.get(ln);
 
-    code.set(ln, line+_input+"");
-    carret = (line+_input+"").length();
+    code.set(ln, line.substring(0,carret)+_input+line.substring(carret,line.length())+"");
+    carret++;// (line+_input+"").length();
 
     if(code.size()>0)
       interpret.send((String)code.get(ln),ln);
@@ -82,10 +82,32 @@ class Editor {
     ln++;
   }
 
+  void left(){
+    if(carret>=1)
+      carret--;
+  }
+
+  void right(){
+    if(carret<((String)code.get(ln)).length())
+      carret++;
+  }
+
+  void up(){
+    if(ln>=1)
+      ln--;
+  }
+
+  void down(){
+    if(ln<code.size()-1)
+      ln++;
+
+  }
+
+
   void backspace() {
     String line = (String)code.get(ln);
     if (line.length()>=1) {  
-      line = line.substring(0, line.length()-1);
+      line = line.substring(0, carret-1)+""+line.substring(carret,line.length());
       code.set(ln, line);
       carret--;
     }else{
@@ -109,6 +131,18 @@ void keyPressed() {
       break;
     case BACKSPACE:
       editor.backspace();
+      break;
+    case LEFT:
+      editor.left();
+      break;
+    case RIGHT:
+      editor.right();
+      break;
+    case UP:
+      editor.up();
+      break;
+    case DOWN:
+      editor.down();
       break;
   }
 }
@@ -157,7 +191,4 @@ class Interpret{
     message.add(body);
     osc.send(message,address);
   }
-
-
-
 }
