@@ -1,0 +1,2 @@
+OpenObject.new;
+OpenObject.openInterpreter;
