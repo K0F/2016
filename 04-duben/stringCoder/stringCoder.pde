@@ -95,12 +95,24 @@ class Editor {
   void up(){
     if(ln>=1)
       ln--;
+
+      carret = constrain(carret,0,((String)code.get(ln)).length());
   }
 
   void down(){
     if(ln<code.size()-1)
       ln++;
 
+      carret = constrain(carret,0,((String)code.get(ln)).length());
+  }
+
+  void delete(){
+    String line = (String)code.get(ln);
+    if (line.length()>=1 && carret<line.length()) {  
+    line = line.substring(0, carret)+""+line.substring(carret+1,line.length());
+      code.set(ln, line);
+
+    }
   }
 
 
@@ -143,6 +155,9 @@ void keyPressed() {
       break;
     case DOWN:
       editor.down();
+      break;
+      case DELETE:
+      editor.delete();
       break;
   }
 }
