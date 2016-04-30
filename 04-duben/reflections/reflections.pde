@@ -21,55 +21,138 @@ Sat Apr 30 14:49:57 CEST 2016
                             "Y8P'
 
 */
+
+boolean RENDER = true;
+
 /////////////////////////////////////////////
 
 int BORDER = 10;
-float FORCE = 2;
-int LASTING = 1000;
-int NUM = 500;
+float FORCE = 1;
+int LASTING = 3800;
+int NUM = 628;
+int ALPHA = 50;
 
-boolean DRAW_LINES = false;
+boolean DRAW_DOTS = false;
+boolean DRAW_LINES = true;
 boolean DRAW_INTER_LINES = false;
+boolean DRAW_MAPS = false;
 
 ////////////////////////////////////////////
 
+float dia = 0;
+PImage mapa,title;
 ArrayList waves;
 
 void setup(){
 
-  size(1280,720,OPENGL);
+  size(1920,1080,P2D);
+
+  title = loadImage("title.png");
+
+  if(RENDER){
+    smooth();
+  }else{
+    hint(DISABLE_DEPTH_TEST);
+  }
+
+  textureMode(NORMAL);
+  mapa = loadImage("map.png");
+
   waves = new ArrayList();
 
 }
 
+void keyPressed(){
+  if(key=='r')
+    mapa = loadImage("map.png");
+
+}
+
 void mousePressed(){
-  waves.add(new Wave(mouseX,mouseY));
+  if(mouseButton==LEFT)
+    waves.add(new Wave(mouseX,mouseY));
+  else if(waves.size()>0)
+    waves.remove(0);
 }
 
 void draw(){
+  background(5);
 
-  background(0);
+  if(frameCount<255){
+    image(title,0,0);
+  }else{
+    dia+=0.1;
+    dia = constrain(dia,0,width/8);
 
-  for(int i = 0 ; i < waves.size();i++){
-    Wave tmp = (Wave)waves.get(i);
-    tmp.move();
-    tmp.dot();
+    if(frameCount%8==0){
+      waves.add(new Wave(sin(frameCount/210.0)*dia+width/2, cos(frameCount/210.0)*dia+height/2));
+    }
 
-    if(DRAW_LINES)
-      tmp.draw();
-  }
 
-  if(waves.size()>1 && DRAW_INTER_LINES)
-    for(int i = 0 ; i <= NUM;i++){
-      for(int ii = 1 ; ii < waves.size();ii++){
-        Wave tmp1 = (Wave)waves.get(ii-1);
-        Wave tmp2 = (Wave)waves.get(ii);
-        Node n1 = tmp1.sel(i);
-        Node n2 = tmp2.sel(i);
-        stroke(255,map(pow(tmp1.life,2.0),0,LASTING*LASTING,50,10));
-        line(n1.pos.x,n1.pos.y,n2.pos.x,n2.pos.y);
+    for(int i = 0 ; i < waves.size();i++){
+      Wave tmp = (Wave)waves.get(i);
+      tmp.move();
+
+      if(DRAW_DOTS)
+        tmp.dot();
+
+      if(DRAW_LINES)
+        tmp.draw();
+    }
+
+    if(waves.size()>1 && DRAW_INTER_LINES)
+      for(int i = 0 ; i <= NUM;i++){
+        for(int ii = 1 ; ii < waves.size();ii++){
+          Wave tmp1 = (Wave)waves.get(ii-1);
+          Wave tmp2 = (Wave)waves.get(ii);
+          Node n1 = tmp1.sel(i);
+          Node n2 = tmp2.sel(i);
+          stroke(255,map(pow(tmp1.life,2.0),0,LASTING*LASTING,50,10));
+          line(n1.pos.x,n1.pos.y,n2.pos.x,n2.pos.y);
+        }
+      }
+
+    if(waves.size()>1 && DRAW_MAPS){
+      for(int i = 1 ; i <= NUM;i++){
+        noStroke();
+        for(int ii = 1 ; ii < waves.size();ii++){
+          Wave w1 = (Wave)waves.get(ii-1);
+          Wave w2 = (Wave)waves.get(ii);
+          Node n1 = w1.sel(i-1);
+          Node n2 = w2.sel(i-1);
+          Node n3 = w2.sel(i);
+          Node n4 = w1.sel(i);
+          if(i==NUM){
+            n3 = w2.sel(0);
+            n4 = w1.sel(0);
+
+          }
+          tint(255,map(pow(w1.life,2.0),0,LASTING*LASTING,255,10));
+          beginShape();
+          texture(mapa);
+          vertex(n1.pos.x,n1.pos.y,0,1);
+          vertex(n2.pos.x,n2.pos.y,0,0);
+          vertex(n3.pos.x,n3.pos.y,1,0);
+          endShape();
+          beginShape();
+          texture(mapa);
+          vertex(n1.pos.x,n1.pos.y,0,1);
+          vertex(n3.pos.x,n3.pos.y,1,0);
+          vertex(n4.pos.x,n4.pos.y,1,1);
+          endShape();
+
+
+        }
       }
     }
+  }
+
+  if(RENDER){
+    saveFrame("/tmp/interferences/fr#####.png");
+    if(frameCount>10000){
+      exit();
+    }
+  }
 
 
 }
@@ -177,7 +260,7 @@ class Node{
   }
 
   void vert(){
-    stroke(255,map(pow(parent.life,2),0,LASTING*LASTING,255,0));
+    stroke(255,map(pow(parent.life,2),0,LASTING*LASTING,ALPHA,0));
     vertex(pos.x,pos.y);
 
 
@@ -185,7 +268,7 @@ class Node{
   }
 
   void dot(){
-    stroke(255,map(pow(parent.life,2),0,LASTING*LASTING,255,0));
+    stroke(255,map(pow(parent.life,2),0,LASTING*LASTING,ALPHA,0));
     point(pos.x,pos.y);
 
 
@@ -194,7 +277,7 @@ class Node{
 
 
   void draw(){
-    stroke(255,map(pow(parent.life,2),0,LASTING*LASTING,100,0));
+    stroke(255,map(pow(parent.life,2),0,LASTING*LASTING,ALPHA/2,0));
     point(pos.x,pos.y);
 
   }
