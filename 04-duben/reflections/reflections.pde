@@ -22,7 +22,7 @@ Sat Apr 30 14:49:57 CEST 2016
 
 */
 
-boolean RENDER = true;
+boolean RENDER = false;
 
 /////////////////////////////////////////////
 
@@ -34,7 +34,7 @@ int ALPHA = 50;
 
 boolean DRAW_DOTS = false;
 boolean DRAW_LINES = true;
-boolean DRAW_INTER_LINES = false;
+boolean DRAW_INTER_LINES = true;
 boolean DRAW_MAPS = false;
 
 ////////////////////////////////////////////
@@ -45,7 +45,7 @@ ArrayList waves;
 
 void setup(){
 
-  size(1920,1080,P2D);
+  size(1280,720,OPENGL);
 
   title = loadImage("title.png");
 
@@ -78,17 +78,10 @@ void mousePressed(){
 void draw(){
   background(5);
 
-  if(frameCount<255){
+  if(frameCount<255 && RENDER){
     image(title,0,0);
   }else{
-    dia+=0.1;
-    dia = constrain(dia,0,width/8);
-
-    if(frameCount%8==0){
-      waves.add(new Wave(sin(frameCount/210.0)*dia+width/2, cos(frameCount/210.0)*dia+height/2));
-    }
-
-
+  
     for(int i = 0 ; i < waves.size();i++){
       Wave tmp = (Wave)waves.get(i);
       tmp.move();
@@ -152,7 +145,14 @@ void draw(){
     if(frameCount>10000){
       exit();
     }
-  }
+   dia+=0.1;
+    dia = constrain(dia,0,width/8);
+
+    if(frameCount%8==0){
+      waves.add(new Wave(sin(frameCount/210.0)*dia+width/2, cos(frameCount/210.0)*dia+height/2));
+    }
+
+ }
 
 
 }
