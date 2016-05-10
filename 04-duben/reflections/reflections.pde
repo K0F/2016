@@ -29,13 +29,13 @@ boolean RENDER = false;
 int BORDER = 10;
 float FORCE = 1;
 int LASTING = 3800;
-int NUM = 628;
+int NUM = 360;
 int ALPHA = 50;
 
 boolean DRAW_DOTS = false;
-boolean DRAW_LINES = true;
-boolean DRAW_INTER_LINES = true;
-boolean DRAW_MAPS = false;
+boolean DRAW_LINES = false;
+boolean DRAW_INTER_LINES = false;
+boolean DRAW_MAPS = true;
 
 ////////////////////////////////////////////
 
@@ -112,26 +112,23 @@ void draw(){
           Wave w1 = (Wave)waves.get(ii-1);
           Wave w2 = (Wave)waves.get(ii);
           Node n1 = w1.sel(i-1);
-          Node n2 = w2.sel(i-1);
-          Node n3 = w2.sel(i);
-          Node n4 = w1.sel(i);
+          Node n2 = w1.sel(i);
+          Node n3 = w2.sel(i-1);
+          Node n4 = w2.sel(i);
           if(i==NUM){
-            n3 = w2.sel(0);
-            n4 = w1.sel(0);
+            n2 = w1.sel(0);
+            n4 = w2.sel(0);
 
           }
           tint(255,map(pow(w1.life,2.0),0,LASTING*LASTING,255,10));
-          beginShape();
+          noStroke();
+          beginShape(QUAD);
           texture(mapa);
-          vertex(n1.pos.x,n1.pos.y,0,1);
-          vertex(n2.pos.x,n2.pos.y,0,0);
-          vertex(n3.pos.x,n3.pos.y,1,0);
-          endShape();
-          beginShape();
-          texture(mapa);
-          vertex(n1.pos.x,n1.pos.y,0,1);
-          vertex(n3.pos.x,n3.pos.y,1,0);
-          vertex(n4.pos.x,n4.pos.y,1,1);
+          float b = 0.05;
+          vertex(n1.pos.x,n1.pos.y,b,b);
+          vertex(n2.pos.x,n2.pos.y,1-b,b);
+          vertex(n4.pos.x,n4.pos.y,1-b,1-b);
+          vertex(n3.pos.x,n3.pos.y,b,1-b);
           endShape();
 
 
