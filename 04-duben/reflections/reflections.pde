@@ -29,7 +29,7 @@ boolean RENDER = false;
 int BORDER = 10;
 float FORCE = 1;
 int LASTING = 3800;
-int NUM = 360;
+int NUM = 360*2;
 int ALPHA = 50;
 
 boolean DRAW_DOTS = false;
@@ -43,10 +43,23 @@ float dia = 0;
 PImage mapa,title;
 ArrayList waves;
 
+PGraphics ram;
+
 void setup(){
 
-  size(1280,720,OPENGL);
+  size(1280,720,P2D);
 
+  ram = createGraphics(width,height);
+  ram.beginDraw();
+  ram.stroke(0);
+  ram.strokeWeight(30);
+  ram.noFill();
+  ram.rect(20,20,width-20,height-20);
+  ram.filter(BLUR,15);
+  ram.endDraw();
+
+  textureWrap(REPEAT);
+  
   title = loadImage("title.png");
 
   if(RENDER){
@@ -120,7 +133,7 @@ void draw(){
             n4 = w2.sel(0);
 
           }
-          tint(255,map(pow(w1.life,2.0),0,LASTING*LASTING,255,10));
+          tint(255,map(pow(w1.life,2.0),0,LASTING*LASTING,ALPHA,10));
           noStroke();
           beginShape(QUAD);
           texture(mapa);
@@ -136,6 +149,9 @@ void draw(){
       }
     }
   }
+
+  noTint();
+  image(ram,0,0);
 
   if(RENDER){
     saveFrame("/tmp/interferences/fr#####.png");
