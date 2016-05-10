@@ -27,7 +27,7 @@ boolean RENDER = false;
 /////////////////////////////////////////////
 
 int BORDER = 10;
-float FORCE = 1;
+float FORCE = 2;
 int LASTING = 3800;
 int NUM = 360*2;
 int ALPHA = 50;
@@ -161,7 +161,7 @@ void draw(){
    dia+=0.1;
     dia = constrain(dia,0,width/8);
 
-    if(frameCount%8==0){
+    if(frameCount%30==0 && frameCount<1000){
       waves.add(new Wave(sin(frameCount/210.0)*dia+width/2, cos(frameCount/210.0)*dia+height/2));
     }
 
