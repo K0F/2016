@@ -62,7 +62,7 @@ class Ship{
     vel.mult(0.9);
     
 
-    acc.add(new PVector(mouseX-pos.x,mouseY-pos.y));
+    acc.add(new PVector(mouseX-pos.x,map(mouseY-pos.y,0,1,0,0.45)));
     acc.div(width+1.1);
 
     pushMatrix();
