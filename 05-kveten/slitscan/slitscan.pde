@@ -93,7 +93,7 @@ void draw(){
         for(int y = 0;y<height;y++){
           pixels[(y/4+(height/4*3))*width+(width-1)] = color(brightness(cam.pixels[y*cw+x]));
         }
-      }else if(oscill){
+      }else if(oscil){
         int x = cw/2+(int)(sin(frameCount/250.0)*250);
         for(int y = 0;y<height;y++){
           pixels[y*width+(width-1)] = color(brightness(cam.pixels[y*cw+x]));
@@ -104,9 +104,6 @@ void draw(){
           pixels[y*width+(width-1)] = color(brightness(cam.pixels[y*cw+x]));
         }
       }
-
-
-    }
 
 
   }else{
