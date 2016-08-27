@@ -120,7 +120,7 @@ class Node{
       float _w2 = (Float)_n.w.get(id);
       float d = dist(pos.x,pos.y,_n.pos.x,_n.pos.y);
       _w += random(-100,100)/1000.0;
-      _w *= (map(d,0,parent.size*2.0,0.5,1.5));
+      _w *= (map(_w,mm,mx,0.5,1.5));
       w.set(i,_w);
 //      pos.x += ((lerp(_n.pos.x,pos.x,map(_w,mm,mx,0,1))-pos.x )/100.0); 
 //      pos.y += ((lerp(_n.pos.y,pos.y,map(_w,mm,mx,0,1))-pos.y)/100.0); 
