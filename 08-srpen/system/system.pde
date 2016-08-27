@@ -71,7 +71,7 @@ class Network{
 
 class Node{
   Network parent;
-  PVector pos;
+  PVector pos,ppos;
   ArrayList w;
   float wsum;
   int id;
@@ -80,6 +80,7 @@ class Node{
     id = _id;
     parent = _parent;
     pos = new PVector(random(-parent.size,parent.size),random(-parent.size,parent.size));
+    ppos = new PVector(pos.x,pos.y);
     w = new ArrayList();
 
   }
@@ -119,11 +120,15 @@ class Node{
       Node _n = (Node)parent.nodes.get(i);
       float _w2 = (Float)_n.w.get(id);
       float d = dist(pos.x,pos.y,_n.pos.x,_n.pos.y);
-      _w += random(-100,100)/1000.0;
-      _w *= (map(_w,mm,mx,0.995,1.005));
+      //_w += random(0,100)/10000.0;
+
+      _w += (wsum/2.0-_w)/100.0;
+      _w += ((map(_w,mm,mx,0.001,2.0))-_w)/1000.0;
+      //if(id==0&&i==0)
+      //  _w += (((sin(frameCount/10.0)+1.1)/2.0)-_w)/100.0;
       w.set(i,_w);
-//      pos.x += ((lerp(_n.pos.x,pos.x,map(_w,mm,mx,0,1))-pos.x )/100.0); 
-//      pos.y += ((lerp(_n.pos.y,pos.y,map(_w,mm,mx,0,1))-pos.y)/100.0); 
+      pos.x = map(_w,mm,mx,0,ppos.x); 
+      pos.y = map(_w,mm,mx,0,ppos.y); 
     }
 
   }
