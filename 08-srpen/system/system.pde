@@ -1,5 +1,8 @@
 
 Network n;
+float mm = 1000000.0;
+float mx = -1000000.0;
+
 
 void setup(){
   size(320,320,P2D);
@@ -10,9 +13,13 @@ void setup(){
 
 void draw(){
 
+mm = 1000000.0;
+  mx = -1000000.0;
+
+
   background(255);
-  n.draw();
   n.step();
+  n.draw();
 
 }
 
@@ -85,10 +92,11 @@ class Node{
   }
 
   void draw(){
+
     for(int i = 0 ; i < parent.nodes.size();i++){
       Node tmp = (Node)parent.nodes.get(i);
-      float _w = (Float)w.get(i);
-      stroke(0,pow(_w-1.0,2)*25.0);
+      float _w = map((Float)w.get(i),mm,mx,0,2);
+      stroke(0,sqrt(_w)*10);
       line(pos.x,pos.y,tmp.pos.x,tmp.pos.y);
     }   
   }
@@ -98,25 +106,25 @@ class Node{
     for(int i = 0 ; i<parent.nodes.size();i++){
       Node n = (Node)parent.nodes.get(i);
       float _w = (Float)w.get(i);
+      mm = min(_w,mm);
+      mx = max(_w,mx);
       _sum += _w;
     }
 
-    wsum += (_sum-wsum)/10.0;
-
+    wsum = _sum/(float)parent.nodes.size();
     println(wsum);
 
     for(int i = 0 ; i<parent.nodes.size();i++){
       float _w = (Float)w.get(i);
       Node _n = (Node)parent.nodes.get(i);
-      for(int _i = 0; _i<parent.nodes.size();_i++){
-        float _w2 = (Float)_n.w.get(_i);
-        _w += (sqrt((_w2)*(_w))-_w)/2.0;
-      }
+      float _w2 = (Float)_n.w.get(id);
+      float d = dist(pos.x,pos.y,_n.pos.x,_n.pos.y);
+      _w += random(-100,100)/1000.0;
+      _w *= (map(d,0,parent.size*2.0,0.5,1.5));
       w.set(i,_w);
-      //pos.x = ((lerp(_n.pos.x,pos.x,wsum))); 
-      //pos.y = ((lerp(_n.pos.y,pos.y,wsum))); 
+//      pos.x += ((lerp(_n.pos.x,pos.x,map(_w,mm,mx,0,1))-pos.x )/100.0); 
+//      pos.y += ((lerp(_n.pos.y,pos.y,map(_w,mm,mx,0,1))-pos.y)/100.0); 
     }
-    w.set(0,(sin(frameCount/((id+1.0)*2.0))+1.0) /2.0);
 
   }
 
