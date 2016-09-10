@@ -3,23 +3,31 @@ import netP5.*;
 
 MidiThread midi;
 
+
+boolean sent = false;
+
 OscP5 oscP5;
 //name the addresses you'll send and receive @
 NetAddress remote;
 
 
 void setup() {
-  size(100,100);
-oscP5 = new OscP5(this,12000);
-remote = new NetAddress("127.0.0.1",1234);
+  size(100,100,P2D);
+  oscP5 = new OscP5(this,12000);
+  remote = new NetAddress("127.0.0.1",1234);
+  
   // create new thread running at 160bpm, bit of D'n'B
   midi = new MidiThread(120);
+  midi.setPriority(Thread.NORM_PRIORITY+2); 
   midi.start();
 }
 
 void draw() {
   // do whatever
-  background(0);
+  background(sent?255:0);
+
+  if(sent)
+  sent = false;
 }
 
 // also shutdown the midi thread when the applet is stopped
@@ -54,6 +62,7 @@ class MidiThread extends Thread {
         OscMessage msg = new OscMessage("/kof/bang");
         msg.add(1.0);
         oscP5.send(msg,remote);
+        sent = true;
 
         // calculate real time until next beat
         long delay=(long)(interval-(System.nanoTime()-previousTime)*1.0e-6);
