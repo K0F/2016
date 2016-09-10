@@ -15,7 +15,8 @@ void setup() {
   size(100,100,P2D);
   oscP5 = new OscP5(this,12000);
   remote = new NetAddress("127.0.0.1",1234);
-  
+
+  frameRate(30);
   // create new thread running at 160bpm, bit of D'n'B
   midi = new MidiThread(120);
   midi.setPriority(Thread.NORM_PRIORITY+2); 
@@ -27,7 +28,7 @@ void draw() {
   background(sent?255:0);
 
   if(sent)
-  sent = false;
+    sent = false;
 }
 
 // also shutdown the midi thread when the applet is stopped
