@@ -20,7 +20,13 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 ///////////////////////////////////////////////////////
 
 
-float DIST = 100.0;
+float ALIGN = 0.01;
+float ATTRACT = 0.1;
+float SLOWDOWN = 0.9;
+
+float speed = 1.0;
+
+float DIST = 50.0;
 int NUM = 1000;
 ArrayList entities;
 
@@ -53,9 +59,10 @@ void draw(){
   for(int i = 0 ; i < entities.size();i++){
     Entity tmp = (Entity)entities.get(i);
     tmp.draw();
-
+/*
     if(i==0)
     println("dump: "+tmp.pos.x+" "+tmp.pos.y);
+  */
   }
 
 }
@@ -77,21 +84,25 @@ class Entity{
     pushMatrix();
     translate(pos.x,pos.y);
     noStroke();
-    fill(255,45);
+    fill(255,25);
     rect(0,0,1,1);
     popMatrix();
 
+
+/*
     for(int i = 0 ; i < contact.size();i++){
       Entity tmp = (Entity)entities.get(i);
       stroke(255,5);
       line(tmp.pos.x,tmp.pos.y,pos.x,pos.y);
     }
+*/
 
   }
 
   void move(){
     pos.add(vel);
     vel.add(acc);
+    vel.mult(SLOWDOWN);
     acc.mult(0.0);
 
     contact = new ArrayList();
@@ -106,21 +117,21 @@ class Entity{
         float dist = sqrt( pow(ox-pos.x,2.0) + pow(oy-pos.y,2.0) );
         PVector nn = new PVector(ox-pos.x,oy-pos.y);
         nn.normalize();
-        nn.mult(0.1/dist);
+        nn.mult(ATTRACT/dist);
         //nn.mult(dist/10000.0);
         
+          PVector nvel = new PVector(other.vel.x-vel.x,other.vel.y-vel.y);
+          nvel.mult(ALIGN/dist);
 
         if(dist>DIST){
-          PVector nvel = new PVector(other.vel.x-vel.x,other.vel.y-vel.y);
-          nvel.mult(0.01/dist);
           acc.add(nn);
-          vel.add(nvel);
+          vel.sub(nvel);
         }else{
-          if(dist<20)
+          if(dist<50)
           contact.add(other);
           
           acc.sub(nn);
-          acc.sub(nn);
+          vel.add(nvel);
           noStroke();
           }
       }
