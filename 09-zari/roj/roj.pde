@@ -20,7 +20,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 ///////////////////////////////////////////////////////
 
 
-float DIST = 50.0;
+float DIST = 100.0;
 int NUM = 1000;
 ArrayList entities;
 
@@ -63,6 +63,7 @@ void draw(){
 
 class Entity{
   PVector pos,acc,vel;
+  ArrayList contact;
   int id;
 
   Entity(int _id){
@@ -80,12 +81,20 @@ class Entity{
     rect(0,0,1,1);
     popMatrix();
 
+    for(int i = 0 ; i < contact.size();i++){
+      Entity tmp = (Entity)entities.get(i);
+      stroke(255,5);
+      line(tmp.pos.x,tmp.pos.y,pos.x,pos.y);
+    }
+
   }
 
   void move(){
     pos.add(vel);
     vel.add(acc);
     acc.mult(0.0);
+
+    contact = new ArrayList();
 
 
     for(int i = 0 ; i < entities.size();i++){
@@ -100,16 +109,19 @@ class Entity{
         nn.mult(0.1/dist);
         //nn.mult(dist/10000.0);
         
-        
+
         if(dist>DIST){
           PVector nvel = new PVector(other.vel.x-vel.x,other.vel.y-vel.y);
           nvel.mult(0.01/dist);
           acc.add(nn);
           vel.add(nvel);
         }else{
+          if(dist<20)
+          contact.add(other);
+          
           acc.sub(nn);
           acc.sub(nn);
-
+          noStroke();
           }
       }
     }
