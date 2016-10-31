@@ -28,7 +28,7 @@
     var mod = Duty.kr((1..32),0,Dseq([1,2,1.5,1.33333]*4,inf));
     //var pattern = 4/((1..32));
     //var env = Decay.ar(Impulse.ar(pattern),1);
-    var sig = SinOsc.ar(4320/mod/((1..32).reciprocal+1).scramble) * SinOsc.ar((1..32).scramble/32/4);
+    var sig = SinOsc.ar([60,64,67].midicps*8/mod/((1..32).reciprocal+1).scramble) * SinOsc.ar((1..32).scramble/32/4);
     //sig = sig + (WhiteNoise.ar(0.5!16) * Pulse.ar(1/4/(1..16)));
 
     SendReply.ar(Impulse.ar(speed),'/trig',sig*255);

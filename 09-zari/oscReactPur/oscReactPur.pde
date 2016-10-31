@@ -2,7 +2,7 @@ import ddf.minim.*;
 import oscP5.*;
 import netP5.*;
 
-int channels = 32;
+int channels = 160;
 
 Minim minim;
 AudioInput in;
@@ -17,7 +17,7 @@ float R = 0;
 float input [][];;
 
 void setup() {
-  size(320,240,OPENGL);
+  size(320,640,OPENGL);
 
   input = new float[channels][height];
 
@@ -116,6 +116,8 @@ void oscEvent(OscMessage theOscMessage) {
   ack = !ack;
   if(theOscMessage.checkAddrPattern("/trig")) {
     String chanS = "ii";
+    int len = theOscMessage.typetag().length()-2;
+    channels = len;
     for(int i = 0 ; i < channels;i++)
       chanS += "f";
 
