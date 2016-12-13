@@ -1,14 +1,19 @@
 
 int NUM = 5000;
 float DIA = 200;
-int SEG = 256;
-float SYMM = 2;
+int SEG = 66;
+float SYMM = 3;
 float ALPHA = 35.0;
+int SKIP = 1;
 
 ArrayList circles;
 
+
+boolean render = false;
+
+
 void setup(){
-  size(1280,720,OPENGL);
+  size(1280,720,P3D);
   
   noiseSeed(2016);
 
@@ -23,6 +28,8 @@ void setup(){
 
 
 void draw(){
+
+SKIP = (int)(noise(frameCount/200.0)*24);
 
   background(5,9,13,120);
 
@@ -40,14 +47,17 @@ void draw(){
   for(int i = 0 ; i < NUM; i++){
     Circle tmp = (Circle)circles.get(i);
 
-    tmp.seg = (int)(pow((sin(frameCount/201.0)+1.3)/2.0 ,1.15) * SEG)+1;
+    tmp.seg = SEG;//(int)(pow((sin(frameCount/201.0)+1.3)/2.0 ,1.15) * SEG)+1;
     tmp.setRot(
         sin((i+frameCount) / 501.0),
         sin((i+frameCount) / 100.0),
         sin((i+frameCount) / 200.1),
-        pow(noise((i/100.0+frameCount) / 3000.0,0),0.71)*1.0);
+        pow(noise((i/100.0+frameCount) / 3000.0,0),5.71)*100.0*noise(frameCount/1000.0));
     tmp.dia = pow(noise(0,(i+frameCount)/1000.0+(i/10001.0)),0.85)*250.0;
   }
+
+  if(render)
+  saveFrame("/home/kof/render/super_symmetry/fr#####.tga");
 
 }
 
@@ -96,9 +106,9 @@ class Circle{
     }
     popMatrix();
 
-    sel+=1;
+    sel+=SKIP;
     if(sel>seg)
-      sel=0;
+      sel=(seg-sel-1);
   }
 
 
