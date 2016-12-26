@@ -35,7 +35,7 @@ float DIST = 100.0;
 int NUM = 5000;
 ArrayList entities;
 
-float DIA = 350.0;
+float DIA = 150.0;
 
 boolean render = false;
 
@@ -44,7 +44,7 @@ PVector cam;
 ///////////////////////////////////////////////////////
 
 void setup(){
-  size(560,768,P2D);
+  size(768,560,P2D);
   frameRate(60);
 
   entities = new ArrayList();
@@ -88,6 +88,7 @@ void drawEntities(){
 
   float xx = 0;
   float yy = 0;
+
   for(int i = 0 ; i < entities.size();i++){
     Entity tmp = (Entity)entities.get(i);
     tmp.move();
@@ -139,8 +140,6 @@ class Entity{
     rect(-sp/2.0,0,sp,1);
     popMatrix();
 
-
-
     /*
        for(int i = 0 ; i < contact.size();i++){
        Entity tmp = (Entity)entities.get(i);
@@ -159,7 +158,6 @@ class Entity{
     acc.mult(0.333);
 
     contact = new ArrayList();
-
 
     for(int i = 0 ; i < entities.size();i++){
 
@@ -194,8 +192,7 @@ class Entity{
 	noStroke();
       }
     }
-
-    //border();
+    //border(); // ???
   }
 
   void border(){
@@ -204,7 +201,6 @@ class Entity{
 
     if(pos.y>height || pos.y<0)
       vel.y *= -1.0;
-
   }
 }
 

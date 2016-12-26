@@ -84,15 +84,19 @@ boolean printImage( String imagepath, boolean indatafolder ) {
     PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
     pras.add(new Copies(1));
     PrintService pss[] = PrintServiceLookup.lookupPrintServices(DocFlavor.INPUT_STREAM.GIF, pras);
+    
     if (pss.length == 0)
       throw new RuntimeException("No printer services available.");
+    
     PrintService ps = pss[0];
     System.out.println("Printing to " + ps);
     DocPrintJob job = ps.createPrintJob();
     String imgpath = imagepath;
-    if ( indatafolder ) {
+    
+if ( indatafolder ) {
       imgpath = dataPath("")+"/"+imagepath;
     }
+
     FileInputStream fin = new FileInputStream( imgpath );
     Doc doc = new SimpleDoc(fin, DocFlavor.INPUT_STREAM.GIF, null);
     job.print(doc, pras);
