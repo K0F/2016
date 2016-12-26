@@ -37,16 +37,14 @@ ArrayList entities;
 
 float DIA = 350.0;
 
-
 boolean render = false;
 
 PVector cam;
 
 ///////////////////////////////////////////////////////
 
-void setup()
-{
-  size(1181,1535,P2D);
+void setup(){
+  size(560,768,P2D);
   frameRate(60);
 
   entities = new ArrayList();
@@ -55,7 +53,7 @@ void setup()
   for(int i = 0 ; i < NUM;i++){
     entities.add(new Entity(i));
   }
-  
+
   background(255);
 }
 
@@ -64,13 +62,13 @@ void draw(){
   noStroke();
   rect(0,0,width,height);
 
+  drawEntities();
+
   if(printing){
-    printFrame(true);
+    printFrame( true );
     printing = false;
   }
 }
-
-
 
 ///////////////////////////////////////////////////////
 
@@ -83,10 +81,10 @@ void keyPressed(){
 ///////////////////////////////////////////////////////
 
 void drawEntities(){
-  
+
   //background(0);
-  fill(0,5,10,70);
-  rect(width/2,height/2,width,height);
+  //fill(0,5,10,70);
+  //rect(width/2,height/2,width,height);
 
   float xx = 0;
   float yy = 0;
@@ -111,7 +109,7 @@ void drawEntities(){
   popMatrix();
 
   if(render)
-  saveFrame("/home/kof/videos/roj/roj#####.png");
+    saveFrame("/home/kof/videos/roj/roj#####.png");
 
 }
 ///////////////////////////////////////////////////////
@@ -124,7 +122,7 @@ class Entity{
   Entity(int _id){
     float theta = random(-TWO_PI,TWO_PI);
     pos = new PVector(cos(theta)*random(DIA)+width/2.0,sin(theta)*random(DIA)+height/2.0);
-    
+
     lpos = new PVector(pos.x,pos.y);
     acc = new PVector(0,0);
     vel = new PVector(0,0);
@@ -166,34 +164,34 @@ class Entity{
     for(int i = 0 ; i < entities.size();i++){
 
       if(id!=i){
-        Entity other = (Entity)entities.get(i);
-        float ox = other.pos.x;
-        float oy = other.pos.y;
-        float dist = sqrt( pow(ox-pos.x,2.0) + pow(oy-pos.y,2.0) );
-        PVector nn = new PVector(ox-pos.x,oy-pos.y);
-        nn.normalize();
-        nn.mult(ATTRACT/dist);
-        //nn.mult(dist/10000.0);
+	Entity other = (Entity)entities.get(i);
+	float ox = other.pos.x;
+	float oy = other.pos.y;
+	float dist = sqrt( pow(ox-pos.x,2.0) + pow(oy-pos.y,2.0) );
+	PVector nn = new PVector(ox-pos.x,oy-pos.y);
+	nn.normalize();
+	nn.mult(ATTRACT/dist);
+	//nn.mult(dist/10000.0);
 
-        PVector nvel = new PVector(other.vel.x-vel.x,other.vel.y-vel.y);
-        nvel.mult(ALIGN/dist);
+	PVector nvel = new PVector(other.vel.x-vel.x,other.vel.y-vel.y);
+	nvel.mult(ALIGN/dist);
 
-        PVector nacc = new PVector(other.acc.x-acc.x,other.acc.y-acc.y);
-        nacc.mult(ALIGN/dist);
+	PVector nacc = new PVector(other.acc.x-acc.x,other.acc.y-acc.y);
+	nacc.mult(ALIGN/dist);
 
-        if(dist>DIST){
-          acc.add(nn);
-          //vel.sub(nvel);
-          vel.sub(nacc);
-        }else{
-          if(dist<50)
-            contact.add(other);
+	if(dist>DIST){
+	  acc.add(nn);
+	  //vel.sub(nvel);
+	  vel.sub(nacc);
+	}else{
+	  if(dist<50)
+	    contact.add(other);
 
-          acc.sub(nn);
-          //vel.add(nvel);
-          vel.add(nacc);
-        }
-        noStroke();
+	  acc.sub(nn);
+	  //vel.add(nvel);
+	  vel.add(nacc);
+	}
+	noStroke();
       }
     }
 
