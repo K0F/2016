@@ -1,5 +1,5 @@
 /*
-   Kofograph
+   Optosonic transoder
    Copyright (C) 2015 Krystof Pesek
 
    This program is free software; you can redistribute it and/or modify
@@ -25,13 +25,14 @@ int width = 1181;
 int height = 1535;
 ////////////////////////
 
-void setup(){
-  size(1120,768,P2D);
+void setup()
+{
+  size(1181,1535,P2D);
   frameRate(60);
 }
 
 void draw(){
-  fill(255,15);
+  fill(255,35);
   noStroke();
   rect(0,0,width,height);
 
